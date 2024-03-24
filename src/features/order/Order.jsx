@@ -1,5 +1,13 @@
 // Test ID: IIDSAT
 
+import { useLoaderData } from "react-router-dom";
+import { getOrder } from "../../services/apiRestaurant";
+import {
+  calcMinutesLeft,
+  formatCurrency,
+  formatDate,
+} from "../../utilities/helpers";
+
 // import {
 //   calcMinutesLeft,
 //   formatCurrency,
@@ -43,20 +51,21 @@
 
 function Order() {
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
-  // const {
-  //   id,
-  //   status,
-  //   priority,
-  //   priorityPrice,
-  //   orderPrice,
-  //   estimatedDelivery,
-  //   cart,
-  // } = order;
-  // const deliveryIn = calcMinutesLeft(estimatedDelivery);
+  const order = useLoaderData();
+  const {
+    //id,
+    status,
+    priority,
+    priorityPrice,
+    orderPrice,
+    estimatedDelivery,
+    //cart,
+  } = order;
+  const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
     <div>
-      {/* <div>
+      <div>
         <h2>Status</h2>
 
         <div>
@@ -78,9 +87,14 @@ function Order() {
         <p>Price pizza: {formatCurrency(orderPrice)}</p>
         {priority && <p>Price priority: {formatCurrency(priorityPrice)}</p>}
         <p>To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}</p>
-      </div> */}
+      </div>
     </div>
   );
+}
+
+export async function loader({ params }) {
+  const order = await getOrder(params.orderId);
+  return order;
 }
 
 export default Order;
